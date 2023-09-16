@@ -4,8 +4,54 @@ const downloadButton = document.getElementById('download-btn');
 
 let idCounter = 1;
 
+// Load existing employee data from local storage when the page loads
+window.addEventListener('load', function () {
+    const savedEmployeeData = JSON.parse(localStorage.getItem('employeeData')) || [];
+    idCounter = savedEmployeeData.length + 1; // Update the ID counter
+
+    savedEmployeeData.forEach(function (employee) {
+        addEmployeeToDOM(employee);
+    });
+});
+
+// Function to add an employee to the list and save to local storage
+function addEmployeeToDOM(employee) {
+    const listItem = document.createElement('li');
+    // Create the HTML for the employee here (similar to what you did before)
+    listItem.innerHTML = `
+        <span>ID: ${employee.id}</span>
+        <span>Name: ${employee.name}</span>
+        <span>Age: ${employee.age} years old</span>
+        <span>Start Date: ${employee.startDate}</span>
+        <span>Training: ${employee.training}</span>
+        <button class="delete-btn">Delete</button>
+    `;
+
+    // Add the employee to the list
+    employeeList.appendChild(listItem);
+
+    // Save the updated employee data to local storage
+    const savedEmployeeData = JSON.parse(localStorage.getItem('employeeData')) || [];
+    savedEmployeeData.push(employee);
+    localStorage.setItem('employeeData', JSON.stringify(savedEmployeeData));
+}
+
+// Function to remove an employee from the list and update local storage
+function removeEmployeeFromDOM(listItem) {
+    // Remove the employee from the list
+    employeeList.removeChild(listItem);
+
+    // Remove the employee from local storage
+    const savedEmployeeData = JSON.parse(localStorage.getItem('employeeData')) || [];
+    const id = parseInt(listItem.querySelector('span#id').textContent);
+    const updatedEmployeeData = savedEmployeeData.filter(employee => employee.id !== id);
+    localStorage.setItem('employeeData', JSON.stringify(updatedEmployeeData));
+}
+
+// Update your submit event listener to call addEmployeeToDOM and store data
 employeeForm.addEventListener('submit', function (e) {
     e.preventDefault();
+    // ...
 
     const nameInput = document.getElementById('name');
     const ageInput = document.getElementById('age');
@@ -18,42 +64,34 @@ employeeForm.addEventListener('submit', function (e) {
     const name = nameInput.value;
     const age = parseInt(ageInput.value);
     const startDate = new Date(startDateInput.value);
-    const isFridgeTrained = fridgeTrainedCheckbox.checked;
-    const isNarcoticsTrained = narcoticsTrainedCheckbox.checked;
-    const isCasesTrained = casesTrainedCheckbox.checked;
-    const isShippingTrained = shippingTrainedCheckbox.checked;
 
-    const currentDate = new Date();
+    // Create an array to hold training details
+    const trainingDetails = [];
+
+    // Add training details based on checkbox status
+    if (fridgeTrainedCheckbox.checked) {
+        trainingDetails.push('❄️ Fridge');
+    }
+    if (narcoticsTrainedCheckbox.checked) {
+        trainingDetails.push('💊 Narcotics');
+    }
+    if (casesTrainedCheckbox.checked) {
+        trainingDetails.push('📦 Cases');
+    }
+    if (shippingTrainedCheckbox.checked) {
+        trainingDetails.push('🚚 Shipping');
+    }
 
     if (name && age && startDate) {
-        // Create an array to hold training details
-        const trainingDetails = [];
+        const employee = {
+            id: idCounter,
+            name: name,
+            age: age,
+            startDate: startDate.toDateString(),
+            training: trainingDetails.join(', ')
+        };
 
-        // Add training details based on checkbox status
-        if (isFridgeTrained) {
-            trainingDetails.push('❄️ Fridge');
-        }
-        if (isNarcoticsTrained) {
-            trainingDetails.push('💊 Narcotics');
-        }
-        if (isCasesTrained) {
-            trainingDetails.push('📦 Cases');
-        }
-        if (isShippingTrained) {
-            trainingDetails.push('🚚 Shipping');
-        }
-
-        // Add the employee to the list with training details
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `
-            <span>ID: ${idCounter}</span>
-            <span>Name: ${name}</span>
-            <span>Age: ${age} years old</span>
-            <span>Start Date: ${startDate.toDateString()}</span>
-            <span>Training: ${trainingDetails.join(', ')}</span>
-            <button class="delete-btn">Delete</button>
-        `;
-        employeeList.appendChild(listItem);
+        addEmployeeToDOM(employee);
 
         // Reset form fields and checkboxes
         nameInput.value = '';
@@ -68,10 +106,11 @@ employeeForm.addEventListener('submit', function (e) {
     }
 });
 
+// Update your delete event listener to call removeEmployeeFromDOM and update data
 employeeList.addEventListener('click', function (e) {
     if (e.target.classList.contains('delete-btn')) {
         const listItem = e.target.parentElement;
-        employeeList.removeChild(listItem);
+        removeEmployeeFromDOM(listItem);
     }
 });
 
