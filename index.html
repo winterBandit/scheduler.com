@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Records</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Employee Records</h1>
+    </header>
+    <main>
+        <form id="employee-form">
+            <input type="text" id="name" placeholder="Employee Name" required>
+            <input type="number" id="age" placeholder="Employee Age" required>
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" required>
+
+            <div class="checkbox-group">
+                <h3>Training:</h3>
+                <label>
+                    <input type="checkbox" id="fridge-trained"> Trained in Fridge
+                </label>
+                <label>
+                    <input type="checkbox" id="narcotics-trained"> Trained in Narcotics
+                </label>
+                <label>
+                    <input type="checkbox" id="cases-trained"> Trained in Cases
+                </label>
+                <label>
+                    <input type="checkbox" id="shipping-trained"> Trained in Shipping
+                </label>
+            </div>
+
+            <button type="submit">Add Employee</button>
+        </form>
+        <button id="download-btn">Download Employee Records</button>
+        <h2>Employee List</h2>
+        <ul id="employee-list"></ul>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
