@@ -1,6 +1,7 @@
 const employeeForm = document.getElementById('employee-form');
 const employeeList = document.getElementById('employee-list');
 const downloadButton = document.getElementById('download-btn');
+const clearListButton = document.getElementById('clear-list-btn');
 
 let idCounter = 1;
 
@@ -119,6 +120,10 @@ downloadButton.addEventListener('click', function () {
     downloadTxtFile(records);
 });
 
+clearListButton.addEventListener('click', function () {
+    clearEmployeeList();
+});
+
 // Helper functions
 function getEmployeeRecordsAsText() {
     const employeeRecords = Array.from(employeeList.children).map(item => item.textContent.trim()).join('\n');
@@ -135,4 +140,9 @@ function downloadTxtFile(content) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+function clearEmployeeList() {
+    employeeList.innerHTML = '';
+    localStorage.setItem('employeeData', '[]');
 }
